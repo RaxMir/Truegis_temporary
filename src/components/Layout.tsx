@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { LANGS, type Lang } from "../i18n";
 import { CLIENTS, COMMON, CONTACTS } from "../content/common";
 import { Icon, type IconName } from "./Icons";
+import { useTheme } from "../theme";
 
 export type NavLink = { href: string; label: string };
 
@@ -42,6 +43,7 @@ export function Kicker({ children }: { children: ReactNode }) {
 export function Header({ brand, logo, homeHref, links, cta, lang, setLang }: { brand: string; logo: string; homeHref: string; links: NavLink[]; cta: NavLink; lang: Lang; setLang: (l: Lang) => void }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { theme, toggle } = useTheme();
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 12);
     on();
@@ -63,6 +65,9 @@ export function Header({ brand, logo, homeHref, links, cta, lang, setLang }: { b
           ))}
         </nav>
         <div className="header__right">
+          <button type="button" className="theme-btn" onClick={toggle} aria-label={theme === "light" ? "Dark mode" : "Light mode"} title={theme === "light" ? "Dark mode" : "Light mode"}>
+            <Icon name={theme === "light" ? "moon" : "sun"} size={18} />
+          </button>
           <div className="lang" role="group" aria-label="Language">
             {LANGS.map((l) => (
               <button key={l} type="button" className={l === lang ? "is-active" : ""} onClick={() => setLang(l)}>

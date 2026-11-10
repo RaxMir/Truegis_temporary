@@ -68,7 +68,7 @@ function MapPin() {
 }
 
 /** Детерминированный «город»: кварталы на круглой площадке, центр свободен под метку. */
-function City() {
+function City({ light }: { light: boolean }) {
   const blocks = useMemo(() => {
     const out: { x: number; z: number; h: number; c: string; w: number }[] = [];
     const palette = ["#e9edff", "#d7defc", "#c3cdf8", "#f4f6ff", "#aebcf5"];
@@ -90,11 +90,11 @@ function City() {
     <group position={[0, -1.35, 0]}>
       <mesh receiveShadow position={[0, -0.09, 0]}>
         <cylinderGeometry args={[2.45, 2.55, 0.18, 96]} />
-        <meshPhysicalMaterial color="#1a1d2b" roughness={0.5} clearcoat={0.4} />
+        <meshPhysicalMaterial color={light ? "#dfe4f4" : "#1a1d2b"} roughness={0.5} clearcoat={0.4} />
       </mesh>
       <mesh position={[0, 0.005, 0]} rotation-x={-Math.PI / 2}>
         <circleGeometry args={[2.38, 96]} />
-        <meshStandardMaterial color="#262b3f" roughness={0.9} />
+        <meshStandardMaterial color={light ? "#eef1fa" : "#262b3f"} roughness={0.9} />
       </mesh>
       {blocks.map((b, i) => (
         <RoundedBox key={i} args={[b.w, b.h, b.w]} radius={0.04} smoothness={3} position={[b.x, b.h / 2, b.z]} castShadow>
@@ -237,22 +237,22 @@ function Satellites() {
   );
 }
 
-export function TrueGisScene({ frameloop }: { frameloop: "always" | "never" }) {
+export function TrueGisScene({ frameloop, light = false }: { frameloop: "always" | "never"; light?: boolean }) {
   return (
     <Canvas frameloop={frameloop} dpr={[1, 1.75]} camera={{ position: [0, 2.8, 9.2], fov: 36 }} gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true }} shadows={false}>
       <ambientLight intensity={0.5} />
       <directionalLight position={[3, 6, 4]} intensity={1.6} />
       <Studio />
-      <TrueGisRig />
+      <TrueGisRig light={light} />
     </Canvas>
   );
 }
 
-function TrueGisRig() {
+function TrueGisRig({ light }: { light: boolean }) {
   const tilt = useTilt(0.3);
   return (
     <group ref={tilt} position={[0, 0.25, 0]}>
-      <City />
+      <City light={light} />
       <Float speed={1.6} rotationIntensity={0.25} floatIntensity={0.6}>
         <group position={[0, 0.55, 0]}>
           <SpinY speed={0.5}>
@@ -358,7 +358,7 @@ function ShifoRig() {
   );
 }
 
-export function ShifoScene({ frameloop }: { frameloop: "always" | "never" }) {
+export function ShifoScene({ frameloop }: { frameloop: "always" | "never"; light?: boolean }) {
   return (
     <Canvas frameloop={frameloop} dpr={[1, 1.75]} camera={{ position: [0, 0, 6], fov: 40 }} gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true }}>
       <ambientLight intensity={0.6} />

@@ -5,6 +5,7 @@
  *  - вне экрана сцена не рисуется (frameloop = never) — не греет телефон и не тратит батарею.
  */
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useTheme } from "../theme";
 
 const Scenes = {
   truegis: lazy(() => import("../three/Scenes").then((m) => ({ default: m.TrueGisScene }))),
@@ -28,7 +29,9 @@ function canRun3D(): boolean {
   }
 }
 
-export function Scene3D({ scene, poster, alt, className = "" }: { scene: keyof typeof Scenes; poster: string; alt: string; className?: string }) {
+export function Scene3D({ scene, poster, posterLight, alt, className = "" }: { scene: keyof typeof Scenes; poster: string; posterLight?: string; alt: string; className?: string }) {
+  const { theme } = useTheme();
+  const light = theme === "light";
   const box = useRef<HTMLDivElement>(null);
   const [enabled] = useState(canRun3D);
   const [visible, setVisible] = useState(false);
@@ -55,11 +58,11 @@ export function Scene3D({ scene, poster, alt, className = "" }: { scene: keyof t
   const Scene = Scenes[scene];
   return (
     <div ref={box} className={`scene3d ${className}`}>
-      <img className={`scene3d__poster ${ready ? "is-hidden" : ""}`} src={poster} alt={alt} draggable={false} />
+      <img className={`scene3d__poster ${ready ? "is-hidden" : ""}`} src={light && posterLight ? posterLight : poster} alt={alt} draggable={false} />
       {enabled && mounted && (
         <div className={`scene3d__canvas ${ready ? "is-ready" : ""}`}>
           <Suspense fallback={null}>
-            <Scene frameloop={visible ? "always" : "never"} />
+            <Scene frameloop={visible ? "always" : "never"} light={light} />
           </Suspense>
         </div>
       )}

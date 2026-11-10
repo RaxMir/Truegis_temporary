@@ -51,7 +51,7 @@ export default function TrueGisPage() {
                 </a>
               </div>
             </div>
-            <Scene3D scene="truegis" poster="/img/3d-truegis.webp" alt="TrueGis" className="hero__scene" />
+            <Scene3D scene="truegis" poster="/img/3d-truegis.webp" posterLight="/img/3d-truegis-light.webp" alt="TrueGis" className="hero__scene" />
           </div>
         </section>
 
