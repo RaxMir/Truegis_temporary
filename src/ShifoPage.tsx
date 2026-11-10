@@ -1,7 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useLang, type Tr } from "./i18n";
 import { SHIFO } from "./content/shifo24";
-import { Cards, Faq, Feature, Footer, Header, LeadForm, Plans, Stats, Steps, useReveal } from "./components/Layout";
+import { Contact, Footer, Header, Kicker, Reveal, Showcase, Statements, Stats, Steps, useReveal } from "./components/Layout";
+import { Icon } from "./components/Icons";
+import { Scene3D } from "./components/Scene3D";
 import { BookingScreen, CrmDesk, QueueScreen } from "./components/Screens";
 
 const titles = Object.fromEntries(Object.entries(SHIFO).map(([k, v]) => [k, v.title])) as Tr<string>;
@@ -10,56 +12,100 @@ const descriptions = Object.fromEntries(Object.entries(SHIFO).map(([k, v]) => [k
 export default function ShifoPage() {
   const { lang, setLang } = useLang(titles, descriptions);
   const t = SHIFO[lang];
-  const [plan, setPlan] = useState("");
   useReveal();
 
   const links = useMemo(
     () => [
       { href: "#features", label: t.nav.features },
-      { href: "#patients", label: t.nav.patients },
-      { href: "#clinic", label: t.nav.clinic },
-      { href: "#pricing", label: t.nav.pricing },
-      { href: "#faq", label: t.nav.faq },
+      { href: "#inside", label: t.nav.inside },
+      { href: "#how", label: t.nav.how },
+      { href: "#contact", label: t.nav.contact },
       { href: "/", label: t.nav.truegis },
     ],
     [t],
   );
-  const visuals = [<BookingScreen lang={lang} key="b" />, <QueueScreen lang={lang} key="q" />, <CrmDesk lang={lang} key="c" />];
-  const ids = ["patients", "queue", "clinic"];
 
   return (
     <div className="theme-shifo">
       <Header brand="Shifo24" logo="/img/shifo24-logo.png" homeHref="/shifo24/" links={links} cta={{ href: "#contact", label: t.cta }} lang={lang} setLang={setLang} />
       <main>
         <section className="hero">
+          <div className="hero__bg" aria-hidden />
           <div className="container hero__grid">
             <div className="hero__text">
-              <span className="eyebrow">
-                <span className="dot" />
-                {t.hero.eyebrow}
-              </span>
-              <h1>
-                <span className="grad-text">{t.hero.h1a}</span> {t.hero.h1b}
+              <a className="parent-link" href="/">
+                <img src="/img/truegis-icon.png" alt="" width={20} height={20} />
+                {t.hero.kicker}
+              </a>
+              <h1 className="display-1">
+                {t.hero.h1}
+                <br />
+                <span className="accent">{t.hero.h1accent}</span>
               </h1>
               <p className="lead">{t.hero.text}</p>
               <div className="hero__ctas">
-                <a className="btn btn-primary" href="#contact">
+                <a className="btn btn-primary btn-lg" href="#contact">
                   {t.hero.primary}
+                  <Icon name="arrow" size={18} />
                 </a>
-                <a className="btn btn-ghost" href="#features">
-                  {t.hero.secondary} →
+                <a className="btn btn-ghost btn-lg" href="#features">
+                  {t.hero.secondary}
                 </a>
               </div>
-              <div className="hero__note">
-                {t.hero.notes.map((n) => (
-                  <span key={n}>{n}</span>
-                ))}
-              </div>
             </div>
-            <div className="hero__visual">
-              <div className="glow" />
-              <BookingScreen lang={lang} />
+            <Scene3D scene="shifo24" poster="/img/3d-shifo24.webp" alt="Shifo24" className="hero__scene" />
+          </div>
+        </section>
+
+        <section className="section">
+          <div className="container">
+            <Reveal>
+              <h2 className="display-2 section-title">{t.change.title}</h2>
+            </Reveal>
+            <Statements items={t.change.items} />
+          </div>
+        </section>
+
+        <section className="section" id="features">
+          <div className="container">
+            <Reveal className="section-head">
+              <Kicker>{t.features.kicker}</Kicker>
+              <h2 className="display-2">{t.features.title}</h2>
+              <p className="lead">{t.features.text}</p>
+            </Reveal>
+            <div className="features">
+              {t.features.items.map((f, i) => (
+                <Reveal className="feature-item" key={f.title} delay={(i % 3) * 80}>
+                  <span className="feature-item__icon">
+                    <Icon name={f.icon} size={22} />
+                  </span>
+                  <div>
+                    <h3>{f.title}</h3>
+                    <p>{f.text}</p>
+                  </div>
+                </Reveal>
+              ))}
             </div>
+          </div>
+        </section>
+
+        <section className="section" id="inside">
+          <div className="container">
+            <Reveal className="section-head">
+              <Kicker>{t.inside.kicker}</Kicker>
+              <h2 className="display-2">{t.inside.title}</h2>
+              <p className="lead">{t.inside.text}</p>
+            </Reveal>
+            <Showcase screens={[<BookingScreen lang={lang} key="b" />, <CrmDesk lang={lang} key="c" />, <QueueScreen lang={lang} key="q" />]} captions={[t.inside.captions[0], t.inside.captions[2], t.inside.captions[1]]} />
+          </div>
+        </section>
+
+        <section className="section" id="how">
+          <div className="container">
+            <Reveal>
+              <h2 className="display-2 section-title">{t.steps.title}</h2>
+            </Reveal>
+            <Steps items={t.steps.items} />
           </div>
         </section>
 
@@ -69,64 +115,25 @@ export default function ShifoPage() {
           </div>
         </section>
 
-        <section className="section">
-          <div className="container">
-            <div className="section-head">
-              <h2>{t.pains.title}</h2>
-              <p className="lead">{t.pains.text}</p>
-            </div>
-            <Cards items={t.pains.cards} />
-          </div>
-        </section>
-
-        <section className="section" id="features">
-          <div className="container">
-            <div className="section-head">
-              <h2>{t.features.title}</h2>
-              <p className="lead">{t.features.text}</p>
-            </div>
-            <Cards items={t.features.cards} />
-          </div>
-        </section>
-
-        <section className="section">
-          <div className="container">
-            {t.blocks.map((b, i) => (
-              <div id={ids[i]} key={b.title}>
-                <Feature title={b.title} text={b.text} points={b.points} visual={visuals[i]} reverse={i % 2 === 1} />
-              </div>
-            ))}
-          </div>
-        </section>
-
         <section className="section--tight">
           <div className="container">
-            <h2 className="center" style={{ marginBottom: 36 }}>
-              {t.steps.title}
-            </h2>
-            <Steps items={t.steps.items} />
-          </div>
-        </section>
-
-        <section className="section" id="pricing">
-          <div className="container">
-            <div className="section-head">
-              <h2>{t.pricing.title}</h2>
-              <p className="lead">{t.pricing.text}</p>
-            </div>
-            <Plans items={t.pricing.plans} note={t.pricing.note} onPick={setPlan} />
-          </div>
-        </section>
-
-        <section className="section" id="faq">
-          <div className="container">
-            <Faq title={t.faq.title} items={t.faq.items} lang={lang} />
+            <Reveal className="family">
+              <img src="/img/truegis-icon.png" alt="" width={56} height={56} />
+              <div>
+                <h3>{t.family.title}</h3>
+                <p className="muted">{t.family.text}</p>
+              </div>
+              <a className="btn btn-ghost" href="/">
+                {t.family.cta}
+                <Icon name="arrow" size={16} />
+              </a>
+            </Reveal>
           </div>
         </section>
 
         <section className="section" id="contact">
           <div className="container">
-            <LeadForm product="shifo24" lang={lang} plans={t.pricing.plans.map((p) => p.name)} plan={plan} setPlan={setPlan} title={t.contact.title} text={t.contact.text} />
+            <Contact product="shifo24" lang={lang} title={t.contact.title} text={t.contact.text} />
           </div>
         </section>
       </main>

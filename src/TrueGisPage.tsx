@@ -1,9 +1,11 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useLang, type Tr } from "./i18n";
 import { CONTACTS } from "./content/common";
 import { TRUEGIS } from "./content/truegis";
-import { Cards, Clients, Faq, Feature, Footer, Header, LeadForm, Plans, Reveal, Stats, Steps, useReveal } from "./components/Layout";
-import { AiSearchScreen, BusinessScreen, CrmDesk, PlaceScreen } from "./components/Screens";
+import { Clients, Contact, Footer, Header, Kicker, Reveal, Showcase, Statements, Stats, useReveal } from "./components/Layout";
+import { Icon } from "./components/Icons";
+import { Scene3D } from "./components/Scene3D";
+import { AiSearchScreen, BusinessScreen, PlaceScreen } from "./components/Screens";
 
 const titles = Object.fromEntries(Object.entries(TRUEGIS).map(([k, v]) => [k, v.title])) as Tr<string>;
 const descriptions = Object.fromEntries(Object.entries(TRUEGIS).map(([k, v]) => [k, v.description])) as Tr<string>;
@@ -11,55 +13,152 @@ const descriptions = Object.fromEntries(Object.entries(TRUEGIS).map(([k, v]) => 
 export default function TrueGisPage() {
   const { lang, setLang } = useLang(titles, descriptions);
   const t = TRUEGIS[lang];
-  const [plan, setPlan] = useState("");
   useReveal();
 
   const links = useMemo(
     () => [
-      { href: "#features", label: t.nav.features },
-      { href: "#business", label: t.nav.business },
-      { href: "/shifo24/", label: t.nav.shifo },
-      { href: "#pricing", label: t.nav.pricing },
-      { href: "#faq", label: t.nav.faq },
+      { href: "#ecosystem", label: t.nav.ecosystem },
+      { href: "#shifo24", label: t.nav.shifo },
+      { href: "#inside", label: t.nav.inside },
       { href: "#contact", label: t.nav.contact },
     ],
     [t],
   );
-  const visuals = [<PlaceScreen lang={lang} key="p" />, <BusinessScreen lang={lang} key="b" />, <CrmDesk lang={lang} key="c" />];
 
   return (
     <>
       <Header brand="TrueGis" logo="/img/truegis-icon.png" homeHref="/" links={links} cta={{ href: "#contact", label: t.cta }} lang={lang} setLang={setLang} />
       <main>
         <section className="hero">
+          <div className="hero__bg" aria-hidden />
           <div className="container hero__grid">
             <div className="hero__text">
-              <span className="eyebrow">
-                <span className="dot" />
-                {t.hero.eyebrow}
-              </span>
-              <h1>
-                <span className="grad-text">{t.hero.h1a}</span> {t.hero.h1b}
+              <Kicker>{t.hero.kicker}</Kicker>
+              <h1 className="display-1">
+                {t.hero.h1}
+                <br />
+                <span className="accent">{t.hero.h1accent}</span>
               </h1>
               <p className="lead">{t.hero.text}</p>
               <div className="hero__ctas">
-                <a className="btn btn-primary" href="#contact">
-                  {t.hero.addBusiness}
+                <a className="btn btn-primary btn-lg" href="#contact">
+                  {t.hero.primary}
+                  <Icon name="arrow" size={18} />
                 </a>
-                <a className="btn btn-ghost" href={CONTACTS.bot} target="_blank" rel="noreferrer">
-                  {t.hero.openBot} →
+                <a className="btn btn-ghost btn-lg" href={CONTACTS.bot} target="_blank" rel="noreferrer">
+                  <Icon name="telegram" size={18} />
+                  {t.hero.secondary}
                 </a>
               </div>
-              <div className="hero__note">
-                {t.hero.notes.map((n) => (
-                  <span key={n}>{n}</span>
-                ))}
+            </div>
+            <Scene3D scene="truegis" poster="/img/3d-truegis.webp" alt="TrueGis" className="hero__scene" />
+          </div>
+        </section>
+
+        <section className="section--tight">
+          <div className="container">
+            <Clients title={t.clients} />
+          </div>
+        </section>
+
+        <section className="section">
+          <div className="container">
+            <Reveal>
+              <h2 className="display-2 section-title">{t.doing.title}</h2>
+            </Reveal>
+            <Statements items={t.doing.items} />
+          </div>
+        </section>
+
+        <section className="section" id="ecosystem">
+          <div className="container">
+            <Reveal className="section-head">
+              <Kicker>{t.eco.kicker}</Kicker>
+              <h2 className="display-2">{t.eco.title}</h2>
+              <p className="lead">{t.eco.text}</p>
+            </Reveal>
+            <div className="eco">
+              <Reveal className="eco__core">
+                <img src="/img/truegis-icon.png" alt="" width={56} height={56} />
+                <div>
+                  <b>{t.eco.core}</b>
+                  <span>{t.eco.coreText}</span>
+                </div>
+              </Reveal>
+              <div className="eco__rail" aria-hidden />
+              <div className="eco__nodes">
+                {t.eco.nodes.map((n, i) => {
+                  const child = n.icon === "heart";
+                  return (
+                    <Reveal className={`eco__node ${child ? "eco__node--child" : ""}`} key={n.name} delay={i * 90}>
+                      {child && <span className="eco__tag">{t.eco.childTag}</span>}
+                      <span className="eco__icon">
+                        <Icon name={n.icon} size={24} />
+                      </span>
+                      <h3>{n.name}</h3>
+                      <p>{n.text}</p>
+                      <ul>
+                        {n.items.map((x) => (
+                          <li key={x}>{x}</li>
+                        ))}
+                      </ul>
+                      {child && (
+                        <a className="eco__link" href="/shifo24/">
+                          shifo24 <Icon name="arrow" size={16} />
+                        </a>
+                      )}
+                    </Reveal>
+                  );
+                })}
+                <Reveal className="eco__node eco__node--next" delay={400}>
+                  <span className="eco__icon">
+                    <Icon name="plus" size={24} />
+                  </span>
+                  <h3>{t.eco.next.name}</h3>
+                  <p>{t.eco.next.text}</p>
+                </Reveal>
               </div>
             </div>
-            <div className="hero__visual">
-              <div className="glow" />
-              <AiSearchScreen lang={lang} />
-            </div>
+          </div>
+        </section>
+
+        <section className="section" id="shifo24">
+          <div className="container">
+            <Reveal className="spotlight theme-shifo">
+              <div className="spotlight__text">
+                <span className="spotlight__brand">
+                  <img src="/img/shifo24-logo.png" alt="" width={36} height={33} />
+                  Shifo24
+                </span>
+                <Kicker>{t.shifo.kicker}</Kicker>
+                <h2 className="display-2">{t.shifo.title}</h2>
+                <p className="lead">{t.shifo.text}</p>
+                <div className="spotlight__facts">
+                  {t.shifo.facts.map((f) => (
+                    <div key={f.label}>
+                      <b>{f.value}</b>
+                      <span>{f.label}</span>
+                    </div>
+                  ))}
+                </div>
+                <a className="btn btn-primary btn-lg" href="/shifo24/">
+                  {t.shifo.cta}
+                  <Icon name="arrow" size={18} />
+                </a>
+              </div>
+              <Scene3D scene="shifo24" poster="/img/3d-shifo24.webp" alt="Shifo24" className="spotlight__scene" />
+            </Reveal>
+          </div>
+        </section>
+
+        <section className="section" id="inside">
+          <div className="container">
+            <Reveal className="section-head">
+              <Kicker>{t.inside.kicker}</Kicker>
+              <h2 className="display-2">{t.inside.title}</h2>
+              <p className="lead">{t.inside.text}</p>
+            </Reveal>
+            <Showcase screens={[<PlaceScreen lang={lang} key="p" />, <AiSearchScreen lang={lang} key="a" />, <BusinessScreen lang={lang} key="b" />]} captions={[t.inside.captions[1], t.inside.captions[0], t.inside.captions[2]]} />
           </div>
         </section>
 
@@ -69,102 +168,9 @@ export default function TrueGisPage() {
           </div>
         </section>
 
-        <section className="section--tight">
-          <div className="container">
-            <h2 className="center" style={{ marginBottom: 32, fontSize: 28 }}>
-              {t.clientsTitle}
-            </h2>
-            <Clients />
-          </div>
-        </section>
-
-        <section className="section" id="features">
-          <div className="container">
-            <div className="section-head">
-              <h2>{t.users.title}</h2>
-              <p className="lead">{t.users.text}</p>
-            </div>
-            <Cards items={t.users.cards} />
-          </div>
-        </section>
-
-        <section className="section" id="business">
-          <div className="container">
-            <div className="section-head">
-              <h2>{t.business.title}</h2>
-              <p className="lead">{t.business.text}</p>
-            </div>
-            {t.business.blocks.map((b, i) => (
-              <Feature key={b.title} title={b.title} text={b.text} points={b.points} visual={visuals[i]} reverse={i % 2 === 1} />
-            ))}
-          </div>
-        </section>
-
-        <section className="section--tight">
-          <div className="container">
-            <h2 className="center" style={{ marginBottom: 36 }}>
-              {t.why.title}
-            </h2>
-            <Cards items={t.why.cards} four />
-          </div>
-        </section>
-
-        <section className="section" id="shifo24">
-          <div className="container">
-            <Reveal className="promo">
-              <div style={{ display: "grid", gap: 16 }}>
-                <span className="promo__brand">
-                  <img src="/img/shifo24-logo.png" alt="" width={40} height={40} />
-                  Shifo24
-                </span>
-                <h2 style={{ fontSize: "clamp(24px, 3vw, 34px)" }}>{t.promo.title}</h2>
-                <p className="muted" style={{ margin: 0 }}>
-                  {t.promo.text}
-                </p>
-                <ul className="checks">
-                  {t.promo.points.map((p) => (
-                    <li key={p}>{p}</li>
-                  ))}
-                </ul>
-                <a className="btn btn-primary" href="/shifo24/" style={{ justifySelf: "start" }}>
-                  {t.promo.cta} →
-                </a>
-              </div>
-              <div className="theme-shifo" style={{ display: "flex", justifyContent: "center" }}>
-                <img src="/img/shifo24-logo.png" alt="Shifo24" width={180} height={163} style={{ filter: "drop-shadow(0 20px 50px rgba(47,181,214,.45))" }} />
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        <section className="section--tight">
-          <div className="container">
-            <h2 className="center" style={{ marginBottom: 36 }}>
-              {t.steps.title}
-            </h2>
-            <Steps items={t.steps.items} />
-          </div>
-        </section>
-
-        <section className="section" id="pricing">
-          <div className="container">
-            <div className="section-head">
-              <h2>{t.pricing.title}</h2>
-              <p className="lead">{t.pricing.text}</p>
-            </div>
-            <Plans items={t.pricing.plans} note={t.pricing.note} onPick={setPlan} />
-          </div>
-        </section>
-
-        <section className="section" id="faq">
-          <div className="container">
-            <Faq title={t.faq.title} items={t.faq.items} lang={lang} />
-          </div>
-        </section>
-
         <section className="section" id="contact">
           <div className="container">
-            <LeadForm product="truegis" lang={lang} plans={t.pricing.plans.map((p) => p.name)} plan={plan} setPlan={setPlan} title={t.contact.title} text={t.contact.text} />
+            <Contact product="truegis" lang={lang} title={t.contact.title} text={t.contact.text} />
           </div>
         </section>
       </main>

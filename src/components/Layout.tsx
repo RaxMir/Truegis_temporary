@@ -1,19 +1,25 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { LANGS, type Lang } from "../i18n";
 import { CLIENTS, COMMON, CONTACTS } from "../content/common";
+import { Icon, type IconName } from "./Icons";
 
 export type NavLink = { href: string; label: string };
 
-/** Плавное появление блоков при прокрутке (один IntersectionObserver на страницу). */
+/** Плавное появление блоков при прокрутке. */
 export function useReveal() {
   useEffect(() => {
-    const els = document.querySelectorAll(".reveal");
+    const els = document.querySelectorAll(".reveal:not(.is-in)");
     if (!("IntersectionObserver" in window)) {
       els.forEach((el) => el.classList.add("is-in"));
       return;
     }
     const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && (e.target.classList.add("is-in"), io.unobserve(e.target))),
+      (entries) =>
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.classList.add("is-in");
+          io.unobserve(e.target);
+        }),
       { rootMargin: "0px 0px -8% 0px" },
     );
     els.forEach((el) => io.observe(el));
@@ -21,33 +27,32 @@ export function useReveal() {
   });
 }
 
-export function Reveal({ children, className = "", as: Tag = "div" }: { children: ReactNode; className?: string; as?: "div" | "section" }) {
-  return <Tag className={`reveal ${className}`}>{children}</Tag>;
+export function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+  return (
+    <div className={`reveal ${className}`} style={delay ? { transitionDelay: `${delay}ms` } : undefined}>
+      {children}
+    </div>
+  );
 }
 
-export function Header({
-  brand,
-  logo,
-  homeHref,
-  links,
-  cta,
-  lang,
-  setLang,
-}: {
-  brand: string;
-  logo: string;
-  homeHref: string;
-  links: NavLink[];
-  cta: NavLink;
-  lang: Lang;
-  setLang: (l: Lang) => void;
-}) {
+export function Kicker({ children }: { children: ReactNode }) {
+  return <span className="kicker">{children}</span>;
+}
+
+export function Header({ brand, logo, homeHref, links, cta, lang, setLang }: { brand: string; logo: string; homeHref: string; links: NavLink[]; cta: NavLink; lang: Lang; setLang: (l: Lang) => void }) {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 12);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
   return (
-    <header className="header">
+    <header className={`header ${scrolled ? "is-scrolled" : ""}`}>
       <div className="container header__row">
         <a className="brand" href={homeHref}>
-          <img src={logo} alt="" width={32} height={32} />
+          <img src={logo} alt="" width={30} height={30} />
           {brand}
         </a>
         <nav className="nav">
@@ -61,7 +66,7 @@ export function Header({
           <div className="lang" role="group" aria-label="Language">
             {LANGS.map((l) => (
               <button key={l} type="button" className={l === lang ? "is-active" : ""} onClick={() => setLang(l)}>
-                {l === "uz" ? "UZ" : l === "ru" ? "RU" : "EN"}
+                {l.toUpperCase()}
               </button>
             ))}
           </div>
@@ -69,7 +74,8 @@ export function Header({
             {cta.label}
           </a>
           <button type="button" className="burger" aria-label={COMMON[lang].menu} aria-expanded={open} onClick={() => setOpen(!open)}>
-            {open ? "×" : "≡"}
+            <span />
+            <span />
           </button>
         </div>
       </div>
@@ -87,28 +93,64 @@ export function Header({
   );
 }
 
-export function Clients() {
+export function Clients({ title }: { title: string }) {
   const row = [...CLIENTS, ...CLIENTS];
   return (
-    <div className="marquee">
-      <div className="marquee__track">
-        {row.map((c, i) => (
-          <div className="client" key={i} aria-hidden={i >= CLIENTS.length}>
-            <img src={c.logo} alt="" height={40} loading="lazy" />
-            {c.name}
-          </div>
-        ))}
+    <div className="clients">
+      <p className="clients__title">{title}</p>
+      <div className="marquee">
+        <div className="marquee__track">
+          {row.map((c, i) => (
+            <div className="client" key={i} aria-hidden={i >= CLIENTS.length}>
+              <img src={c.logo} alt="" height={36} />
+              {c.name}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
+/** Число «набегает», когда блок появляется на экране. */
+function CountUp({ value }: { value: string }) {
+  const ref = useRef<HTMLElement>(null);
+  const [text, setText] = useState(value);
+  useEffect(() => {
+    const m = value.match(/^([^\d]*)([\d\s,.]+)(.*)$/);
+    const el = ref.current;
+    if (!m || !el || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const [, pre, num, post] = m;
+    if (/\d/.test(post)) return; // «24/7» и т. п. — не считаем
+    const sep = num.includes(",") ? "," : num.includes(" ") ? " " : "";
+    const target = Number(num.replace(/[\s,]/g, ""));
+    if (!Number.isFinite(target) || target < 10) return;
+    const fmt = (n: number) => pre + (sep ? Math.round(n).toLocaleString("en-US").replace(/,/g, sep) : String(Math.round(n))) + post;
+    // до появления на экране — итоговое число (блок всё равно скрыт анимацией появления)
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      setText(fmt(0));
+      const start = performance.now();
+      const step = (now: number) => {
+        const t = Math.min(1, (now - start) / 1400);
+        setText(fmt(target * (1 - Math.pow(1 - t, 3))));
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [value]);
+  return <b ref={ref}>{text}</b>;
+}
+
 export function Stats({ items }: { items: { value: string; label: string }[] }) {
   return (
     <div className="stats">
-      {items.map((s) => (
-        <Reveal className="stat" key={s.label}>
-          <b>{s.value}</b>
+      {items.map((s, i) => (
+        <Reveal className="stat" key={s.label} delay={i * 80}>
+          <CountUp value={s.value} />
           <span>{s.label}</span>
         </Reveal>
       ))}
@@ -116,52 +158,15 @@ export function Stats({ items }: { items: { value: string; label: string }[] }) 
   );
 }
 
-export type Card = { icon: string; title: string; text: string; tag?: string };
-export function Cards({ items, four }: { items: Card[]; four?: boolean }) {
+export function Statements({ items }: { items: { icon: IconName; title: string; text: string }[] }) {
   return (
-    <div className={`cards ${four ? "cards--4" : ""}`}>
-      {items.map((c) => (
-        <Reveal className="card" key={c.title}>
-          <div className="icon" aria-hidden>
-            {c.icon}
-          </div>
-          {c.tag && <span className="tag">{c.tag}</span>}
-          <h3>{c.title}</h3>
-          <p>{c.text}</p>
-        </Reveal>
-      ))}
-    </div>
-  );
-}
-
-export function Feature({ title, text, points, visual, reverse, spark = "✦" }: { title: string; text: string; points: string[]; visual: ReactNode; reverse?: boolean; spark?: string }) {
-  return (
-    <Reveal className={`feature ${reverse ? "feature--rev" : ""}`}>
-      <div className="feature__text">
-        <h3>
-          <span className="spark accent">{spark}</span>
-          <span className="grad-text">{title}</span>
-        </h3>
-        <p className="lead">{text}</p>
-        <ul className="checks">
-          {points.map((p) => (
-            <li key={p}>{p}</li>
-          ))}
-        </ul>
-      </div>
-      <div className="feature__visual">
-        <div className="glow" />
-        {visual}
-      </div>
-    </Reveal>
-  );
-}
-
-export function Steps({ items }: { items: { title: string; text: string }[] }) {
-  return (
-    <div className="steps">
-      {items.map((s) => (
-        <Reveal className="step" key={s.title}>
+    <div className="statements">
+      {items.map((s, i) => (
+        <Reveal className="statement" key={s.title} delay={i * 100}>
+          <span className="statement__num">0{i + 1}</span>
+          <span className="statement__icon">
+            <Icon name={s.icon} size={28} />
+          </span>
           <h3>{s.title}</h3>
           <p>{s.text}</p>
         </Reveal>
@@ -170,66 +175,37 @@ export function Steps({ items }: { items: { title: string; text: string }[] }) {
   );
 }
 
-export type Plan = { name: string; price: string; per?: string; text: string; points: string[]; hot?: string; cta: string };
-export function Plans({ items, note, onPick }: { items: Plan[]; note: string; onPick: (plan: string) => void }) {
+export function Steps({ items }: { items: { title: string; text: string }[] }) {
   return (
-    <>
-      <div className="plans">
-        {items.map((p) => (
-          <Reveal className={`plan ${p.hot ? "plan--hot" : ""}`} key={p.name}>
-            {p.hot && <span className="plan__badge">{p.hot}</span>}
-            <h3>{p.name}</h3>
-            <div className="plan__price">
-              {p.price} {p.per && <small>{p.per}</small>}
-            </div>
-            <p className="muted" style={{ margin: 0, fontSize: 15 }}>
-              {p.text}
-            </p>
-            <ul>
-              {p.points.map((x) => (
-                <li key={x}>{x}</li>
-              ))}
-            </ul>
-            <a className={`btn ${p.hot ? "btn-primary" : "btn-ghost"}`} href="#contact" onClick={() => onPick(p.name)}>
-              {p.cta}
-            </a>
-          </Reveal>
-        ))}
-      </div>
-      <p className="plans-note">{note}</p>
-    </>
+    <div className="steps">
+      {items.map((s, i) => (
+        <Reveal className="step" key={s.title} delay={i * 100}>
+          <span className="step__num">0{i + 1}</span>
+          <h3>{s.title}</h3>
+          <p>{s.text}</p>
+        </Reveal>
+      ))}
+    </div>
   );
 }
 
-export function Faq({ title, items, lang }: { title: string; items: { q: string; a: string }[]; lang: Lang }) {
-  const [open, setOpen] = useState<number | null>(0);
+/** Три экрана веером: средний впереди, крайние повёрнуты. */
+export function Showcase({ screens, captions }: { screens: ReactNode[]; captions: string[] }) {
   return (
-    <div className="faq">
-      <div className="faq__intro">
-        <h2>{title}</h2>
-        <p className="muted">{COMMON[lang].faqAsk}</p>
-        <a className="btn btn-primary" href={CONTACTS.sales} target="_blank" rel="noreferrer">
-          {COMMON[lang].writeTelegram}
-        </a>
-      </div>
-      <div>
-        {items.map((it, i) => (
-          <div className={`faq__item ${open === i ? "is-open" : ""}`} key={it.q}>
-            <button type="button" className="faq__q" aria-expanded={open === i} onClick={() => setOpen(open === i ? null : i)}>
-              {it.q}
-              <i aria-hidden>+</i>
-            </button>
-            {open === i && <p className="faq__a">{it.a}</p>}
-          </div>
-        ))}
-      </div>
+    <div className="showcase">
+      {screens.map((s, i) => (
+        <Reveal className={`showcase__item showcase__item--${i}`} key={i} delay={i * 120}>
+          {s}
+          <span className="showcase__caption">{captions[i]}</span>
+        </Reveal>
+      ))}
     </div>
   );
 }
 
 const API = ((import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() || "https://dev.admin13.uz/v1").replace(/\/$/, "");
 
-export function LeadForm({ product, lang, plans, plan, setPlan, title, text }: { product: "truegis" | "shifo24"; lang: Lang; plans: string[]; plan: string; setPlan: (p: string) => void; title: string; text: string }) {
+export function Contact({ product, lang, title, text }: { product: "truegis" | "shifo24"; lang: Lang; title: string; text: string }) {
   const t = COMMON[lang].form;
   const [state, setState] = useState<"idle" | "sending" | "ok" | "err">("idle");
   const [error, setError] = useState<string | null>(null);
@@ -254,7 +230,6 @@ export function LeadForm({ product, lang, plans, plan, setPlan, title, text }: {
       }
       setState("ok");
       formRef.current?.reset();
-      setPlan("");
     } catch {
       setState("err");
     }
@@ -262,72 +237,51 @@ export function LeadForm({ product, lang, plans, plan, setPlan, title, text }: {
 
   return (
     <div className="contact">
-      <div className="contact__info">
-        <h2>{title}</h2>
+      <Reveal className="contact__info">
+        <h2 className="display-2">{title}</h2>
         <p className="lead">{text}</p>
-        <a className="contact__line" href={CONTACTS.phoneHref}>
-          <span className="icon">📞</span>
-          {CONTACTS.phone}
-        </a>
-        <a className="contact__line" href={CONTACTS.sales} target="_blank" rel="noreferrer">
-          <span className="icon">✈️</span>
-          Telegram
-        </a>
-        <div className="contact__line">
-          <span className="icon">📍</span>
-          <span className="muted">{COMMON[lang].address}</span>
+        <div className="contact__lines">
+          <a className="contact__line" href={CONTACTS.phoneHref}>
+            <Icon name="call" size={20} />
+            {CONTACTS.phone}
+          </a>
+          <a className="contact__line" href={CONTACTS.sales} target="_blank" rel="noreferrer">
+            <Icon name="telegram" size={20} />
+            Telegram
+          </a>
+          <span className="contact__line muted">
+            <Icon name="location" size={20} />
+            {COMMON[lang].address}
+          </span>
         </div>
-      </div>
-      <form className="form" ref={formRef} onSubmit={submit}>
-        <h3>{t.title}</h3>
-        <p className="muted" style={{ margin: 0 }}>
-          {t.text}
-        </p>
-        <div className="form__row">
+      </Reveal>
+      <Reveal className="form-wrap" delay={120}>
+        <form className="form" ref={formRef} onSubmit={submit}>
           <label className="field">
-            {t.name}
+            <span>{t.name}</span>
             <input className="input" name="name" required minLength={2} maxLength={80} autoComplete="name" />
           </label>
           <label className="field">
-            {t.phone}
+            <span>{t.phone}</span>
             <input className="input" name="phone" required type="tel" inputMode="tel" placeholder="+998 90 123 45 67" maxLength={32} autoComplete="tel" />
           </label>
-        </div>
-        <div className="form__row">
           <label className="field">
-            {t.business}
+            <span>{t.business}</span>
             <input className="input" name="business" maxLength={120} autoComplete="organization" />
           </label>
-          <label className="field">
-            {t.plan}
-            <select className="input" name="plan" value={plan} onChange={(e) => setPlan(e.target.value)}>
-              <option value="">{t.planAny}</option>
-              {plans.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </select>
+          <label className="hp" aria-hidden>
+            Website
+            <input name="website" tabIndex={-1} autoComplete="off" />
           </label>
-        </div>
-        <label className="field">
-          {t.message}
-          <textarea className="input" name="message" maxLength={1000} />
-        </label>
-        {/* ловушка для ботов: людям не видна */}
-        <label className="hp" aria-hidden>
-          Website
-          <input name="website" tabIndex={-1} autoComplete="off" />
-        </label>
-        <button className="btn btn-primary" type="submit" disabled={state === "sending"}>
-          {state === "sending" ? t.sending : t.send}
-        </button>
-        {state === "ok" && <p className="form__msg form__msg--ok">{t.ok}</p>}
-        {state === "err" && <p className="form__msg form__msg--err">{error ?? t.err}</p>}
-        <p className="muted" style={{ margin: 0, fontSize: 13 }}>
-          {t.privacy}
-        </p>
-      </form>
+          <button className="btn btn-primary btn-lg" type="submit" disabled={state === "sending"}>
+            {state === "sending" ? t.sending : t.send}
+            <Icon name="arrow" size={18} />
+          </button>
+          {state === "ok" && <p className="form__msg form__msg--ok">{t.ok}</p>}
+          {state === "err" && <p className="form__msg form__msg--err">{error ?? t.err}</p>}
+          <p className="form__note">{t.privacy}</p>
+        </form>
+      </Reveal>
     </div>
   );
 }
@@ -338,15 +292,16 @@ export function Footer({ lang, links }: { lang: Lang; links: NavLink[] }) {
     <footer className="footer">
       <div className="container">
         <div className="footer__grid">
-          <div>
+          <div className="footer__brand">
             <a className="brand" href="/">
-              <img src="/img/truegis-icon.png" alt="" width={32} height={32} />
+              <img src="/img/truegis-icon.png" alt="" width={30} height={30} />
               TrueGis
             </a>
-            <p className="muted" style={{ fontSize: 14 }}>
-              {t.tryBot}
-            </p>
-            <img className="footer__qr" src="/img/truegis-qr.svg" alt="QR @TrueGis_bot" width={92} height={92} />
+            <p className="muted">{t.about}</p>
+            <div className="footer__qr">
+              <img src="/img/truegis-qr.svg" alt="QR @TrueGis_bot" width={84} height={84} />
+              <span className="muted">{t.tryBot}</span>
+            </div>
           </div>
           <div>
             <h4>{t.products}</h4>
@@ -382,10 +337,10 @@ export function Footer({ lang, links }: { lang: Lang; links: NavLink[] }) {
               </li>
               <li>
                 <a href={CONTACTS.channel} target="_blank" rel="noreferrer">
-                  @TrueGis
+                  t.me/TrueGis
                 </a>
               </li>
-              <li>{COMMON[lang].address}</li>
+              <li className="muted">{COMMON[lang].address}</li>
             </ul>
           </div>
         </div>
@@ -393,7 +348,7 @@ export function Footer({ lang, links }: { lang: Lang; links: NavLink[] }) {
           <span>
             © {new Date().getFullYear()} {t.rights}
           </span>
-          <span>truegis.uz</span>
+          <span>TrueGis · Shifo24</span>
         </div>
       </div>
     </footer>

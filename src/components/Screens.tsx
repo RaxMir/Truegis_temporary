@@ -27,7 +27,7 @@ export function AiSearchScreen({ lang }: { lang: Lang }) {
   return (
     <Phone title="TrueGIS AI" logo="/img/truegis-icon.png" input={L(lang, { uz: "Xabar yozing…", ru: "Сообщение…", en: "Message…" })}>
       <div className="ui-bubble">{L(lang, { uz: "Yaqin atrofda arzon va mazali osh qayerda?", ru: "Где рядом вкусный и недорогой плов?", en: "Where can I get good, cheap plov nearby?" })}</div>
-      <div className="ui-bubble ui-bubble--in">{L(lang, { uz: "Sizga yaqin 3 ta joy topdim 👇", ru: "Нашёл 3 места рядом с вами 👇", en: "I found 3 places near you 👇" })}</div>
+      <div className="ui-bubble ui-bubble--in">{L(lang, { uz: "Sizga yaqin 3 ta joy topdim ", ru: "Нашёл 3 места рядом с вами ", en: "I found 3 places near you " })}</div>
       {[
         ["Bek Restorani", "0.6 km", "4.8"],
         ["Fayz Mount", "1.2 km", "4.7"],
@@ -85,7 +85,6 @@ export function PlaceScreen({ lang }: { lang: Lang }) {
       <div className="ui-chips">
         <span className="ui-chip">Google Maps</span>
         <span className="ui-chip">Yandex Maps</span>
-        <span className="ui-chip">📞</span>
       </div>
     </Phone>
   );
@@ -100,9 +99,9 @@ export function BusinessScreen({ lang }: { lang: Lang }) {
         <span className="ui-chip">{L(lang, { uz: "Aksiyalar", ru: "Акции", en: "Deals" })}</span>
       </div>
       {[
-        ["🍔 Burger Classic", "65 000"],
-        ["🍕 Pizza Pepperoni", "89 000"],
-        ["🥤 Lemonade", "25 000"],
+        ["Burger Classic", "65 000"],
+        ["Pizza Pepperoni", "89 000"],
+        ["Lemonade", "25 000"],
       ].map(([n, p]) => (
         <div className="ui-card" key={n}>
           <div className="ui-row">
@@ -118,7 +117,7 @@ export function BusinessScreen({ lang }: { lang: Lang }) {
         </div>
         <div className="ui-btn">{L(lang, { uz: "Buyurtma berish", ru: "Оформить заказ", en: "Place order" })}</div>
       </div>
-      <div className="ui-bubble ui-bubble--in">🤖 {L(lang, { uz: "AI yordamchi: «Bugun 20:00 ga stol bo‘sh, band qilaymi?»", ru: "AI-помощник: «На 20:00 есть свободный столик, забронировать?»", en: "AI assistant: “A table is free at 8 pm — shall I book it?”" })}</div>
+      <div className="ui-bubble ui-bubble--in">{L(lang, { uz: "AI yordamchi: «Bugun 20:00 ga stol bo‘sh, band qilaymi?»", ru: "AI-помощник: «На 20:00 есть свободный столик, забронировать?»", en: "AI assistant: “A table is free at 8 pm — shall I book it?”" })}</div>
     </Phone>
   );
 }
@@ -153,7 +152,7 @@ export function BookingScreen({ lang }: { lang: Lang }) {
         </div>
         <div className="ui-btn">{L(lang, { uz: "11:00 ga yozilish", ru: "Записаться на 11:00", en: "Book 11:00" })}</div>
       </div>
-      <div className="ui-bubble ui-bubble--in">✅ {L(lang, { uz: "SMS: Siz 14-noyabr 11:00 ga yozildingiz", ru: "SMS: Вы записаны на 14 ноября, 11:00", en: "SMS: You are booked for Nov 14, 11:00" })}</div>
+      <div className="ui-bubble ui-bubble--in">{L(lang, { uz: "SMS: Siz 14-noyabr 11:00 ga yozildingiz", ru: "SMS: Вы записаны на 14 ноября, 11:00", en: "SMS: You are booked for Nov 14, 11:00" })}</div>
     </Phone>
   );
 }
@@ -176,11 +175,11 @@ export function QueueScreen({ lang }: { lang: Lang }) {
           <span className="ui-value">{L(lang, { uz: "Terapevt, 204-xona", ru: "Терапевт, каб. 204", en: "GP, room 204" })}</span>
         </div>
       </div>
-      <div className="ui-bubble ui-bubble--in">🔔 {L(lang, { uz: "Navbatingiz yaqinlashganda Telegram orqali chaqiramiz", ru: "Позовём в Telegram, когда подойдёт ваша очередь", en: "We’ll call you in Telegram when it’s your turn" })}</div>
+      <div className="ui-bubble ui-bubble--in">{L(lang, { uz: "Navbatingiz yaqinlashganda Telegram orqali chaqiramiz", ru: "Позовём в Telegram, когда подойдёт ваша очередь", en: "We’ll call you in Telegram when it’s your turn" })}</div>
       <div className="ui-card">
         <div className="ui-row">
           <span className="ui-value">{L(lang, { uz: "Tibbiy kartaga ruxsat", ru: "Доступ к медкарте", en: "Medical card access" })}</span>
-          <span>🛡️</span>
+          <span></span>
         </div>
         <span className="ui-label">{L(lang, { uz: "Shifokor butun kartangizni ko‘rishni so‘ramoqda", ru: "Врач просит доступ ко всей медкарте", en: "The doctor asks to see your full card" })}</span>
         <div className="ui-row" style={{ gap: 6 }}>
