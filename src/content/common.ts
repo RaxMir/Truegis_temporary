@@ -32,7 +32,7 @@ export type CommonText = {
     err: string;
     privacy: string;
   };
-  footer: { about: string; products: string; links: string; contact: string; tryBot: string; rights: string };
+  footer: { about: string; aboutShifo: string; products: string; links: string; contact: string; tryBot: string; rights: string };
   menu: string;
 };
 
@@ -51,7 +51,7 @@ export const COMMON: Tr<CommonText> = {
       err: "Yuborib bo‘lmadi. Qayta urinib ko‘ring yoki Telegramga yozing.",
       privacy: "Ma’lumotlaringiz faqat siz bilan bog‘lanish uchun ishlatiladi.",
     },
-    footer: { about: "Telegram ichidagi shahar ekotizimi. Joylar, bizneslar va xizmatlar — bir joyda.", products: "Mahsulotlar", links: "Bo‘limlar", contact: "Aloqa", tryBot: "QR kodni skanerlang va botni sinab ko‘ring", rights: "Cosinus MChJ. Barcha huquqlar himoyalangan." },
+    footer: { aboutShifo: "Klinikalar uchun onlayn yozilish, jonli navbat, tibbiy karta va CRM — bitta tizimda.", about: "Telegram ichidagi shahar ekotizimi. Joylar, bizneslar va xizmatlar — bir joyda.", products: "Mahsulotlar", links: "Bo‘limlar", contact: "Aloqa", tryBot: "QR kodni skanerlang va botni sinab ko‘ring", rights: "Cosinus MChJ. Barcha huquqlar himoyalangan." },
     menu: "Menyu",
   },
   ru: {
@@ -68,7 +68,7 @@ export const COMMON: Tr<CommonText> = {
       err: "Не удалось отправить. Попробуйте ещё раз или напишите в Telegram.",
       privacy: "Данные используются только для связи с вами.",
     },
-    footer: { about: "Экосистема города внутри Telegram. Места, бизнесы и сервисы — в одном месте.", products: "Продукты", links: "Разделы", contact: "Контакты", tryBot: "Отсканируйте QR-код и попробуйте бота", rights: "ООО Cosinus. Все права защищены." },
+    footer: { aboutShifo: "Онлайн-запись, живая очередь, медкарта и CRM для клиник — в одной системе.", about: "Экосистема города внутри Telegram. Места, бизнесы и сервисы — в одном месте.", products: "Продукты", links: "Разделы", contact: "Контакты", tryBot: "Отсканируйте QR-код и попробуйте бота", rights: "ООО Cosinus. Все права защищены." },
     menu: "Меню",
   },
   en: {
@@ -85,7 +85,7 @@ export const COMMON: Tr<CommonText> = {
       err: "Could not send. Please try again or message us on Telegram.",
       privacy: "Your data is used only to contact you.",
     },
-    footer: { about: "A city ecosystem inside Telegram. Places, businesses and services — in one place.", products: "Products", links: "Sections", contact: "Contact", tryBot: "Scan the QR code and try our bot", rights: "Cosinus LLC. All rights reserved." },
+    footer: { aboutShifo: "Online booking, a live queue, medical cards and CRM for clinics — in one system.", about: "A city ecosystem inside Telegram. Places, businesses and services — in one place.", products: "Products", links: "Sections", contact: "Contact", tryBot: "Scan the QR code and try our bot", rights: "Cosinus LLC. All rights reserved." },
     menu: "Menu",
   },
 };

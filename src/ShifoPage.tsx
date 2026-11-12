@@ -20,7 +20,6 @@ export default function ShifoPage() {
       { href: "#inside", label: t.nav.inside },
       { href: "#how", label: t.nav.how },
       { href: "#contact", label: t.nav.contact },
-      { href: "/", label: t.nav.truegis },
     ],
     [t],
   );
@@ -33,10 +32,7 @@ export default function ShifoPage() {
           <div className="hero__bg" aria-hidden />
           <div className="container hero__grid">
             <div className="hero__text">
-              <a className="parent-link" href="/">
-                <img src="/img/truegis-icon.png" alt="" width={20} height={20} />
-                {t.hero.kicker}
-              </a>
+              <Kicker>{t.hero.kicker}</Kicker>
               <h1 className="display-1">
                 {t.hero.h1}
                 <br />
@@ -100,6 +96,55 @@ export default function ShifoPage() {
           </div>
         </section>
 
+        {/* TrueGis — отдельная система в своих (синих) цветах: как она приводит клинике новых пациентов */}
+        <section className="section" id="truegis">
+          <div className="container">
+            <Reveal className="tg-panel theme-truegis">
+              <div className="tg-panel__text">
+                <span className="tg-panel__brand">
+                  <img src="/img/truegis-icon.png" alt="" width={36} height={36} />
+                  TrueGis
+                </span>
+                <Kicker>{t.truegis.kicker}</Kicker>
+                <h2 className="display-2">{t.truegis.title}</h2>
+                <p className="lead">{t.truegis.text}</p>
+                <div className="tg-panel__points">
+                  {t.truegis.points.map((p) => (
+                    <div className="tg-point" key={p.title}>
+                      <span className="tg-point__icon">
+                        <Icon name={p.icon} size={20} />
+                      </span>
+                      <div>
+                        <h3>{p.title}</h3>
+                        <p>{p.text}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="tg-panel__stats">
+                  {t.truegis.stats.map((x) => (
+                    <div key={x.label}>
+                      <b>{x.value}</b>
+                      <span>{x.label}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="tg-panel__ctas">
+                  <a className="btn btn-primary btn-lg" href="#contact">
+                    {t.truegis.cta}
+                    <Icon name="arrow" size={18} />
+                  </a>
+                  <a className="tg-panel__more" href="/">
+                    {t.truegis.more}
+                    <Icon name="arrow" size={16} />
+                  </a>
+                </div>
+              </div>
+              <Scene3D scene="truegis" poster="/img/3d-truegis.webp" posterLight="/img/3d-truegis-light.webp" alt="TrueGis" className="tg-panel__scene" />
+            </Reveal>
+          </div>
+        </section>
+
         <section className="section" id="how">
           <div className="container">
             <Reveal>
@@ -115,29 +160,13 @@ export default function ShifoPage() {
           </div>
         </section>
 
-        <section className="section--tight">
-          <div className="container">
-            <Reveal className="family">
-              <img src="/img/truegis-icon.png" alt="" width={56} height={56} />
-              <div>
-                <h3>{t.family.title}</h3>
-                <p className="muted">{t.family.text}</p>
-              </div>
-              <a className="btn btn-ghost" href="/">
-                {t.family.cta}
-                <Icon name="arrow" size={16} />
-              </a>
-            </Reveal>
-          </div>
-        </section>
-
         <section className="section" id="contact">
           <div className="container">
-            <Contact product="shifo24" lang={lang} title={t.contact.title} text={t.contact.text} />
+            <Contact product="shifo24" lang={lang} title={t.contact.title} text={t.contact.text} steps={t.contact.steps} />
           </div>
         </section>
       </main>
-      <Footer lang={lang} links={links} />
+      <Footer lang={lang} links={links} brand="shifo24" />
     </div>
   );
 }

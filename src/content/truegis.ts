@@ -10,7 +10,7 @@ export type TrueGisText = {
   cta: string;
   hero: { kicker: string; h1: string; h1accent: string; text: string; primary: string; secondary: string };
   doing: { title: string; items: { icon: IconName; title: string; text: string }[] };
-  eco: { kicker: string; title: string; text: string; core: string; coreText: string; nodes: EcoNode[]; childTag: string; next: { name: string; text: string } };
+  eco: { kicker: string; title: string; text: string; core: string; coreText: string; nodes: EcoNode[]; next: { name: string; text: string } };
   shifo: { kicker: string; title: string; text: string; facts: { value: string; label: string }[]; cta: string };
   inside: { kicker: string; title: string; text: string; captions: string[] };
   stats: { value: string; label: string }[];
@@ -52,11 +52,10 @@ export const TRUEGIS: Tr<TrueGisText> = {
         { icon: "bot", name: "Botlar va CRM", text: "Brendli bot va boshqaruv paneli", items: ["O‘z boti", "CRM", "AI yordamchi", "Statistika"] },
         { icon: "heart", name: "Shifo24", text: "Klinikalar uchun to‘liq yechim", items: ["Onlayn yozilish", "Jonli navbat", "Tibbiy karta", "SMS"] },
       ],
-      childTag: "Birinchi katta mahsulot",
       next: { name: "Keyingisi", text: "Yangi yo‘nalishlar tayyorlanmoqda" },
     },
     shifo: {
-      kicker: "TrueGis oilasidan · birinchi katta mahsulot",
+      kicker: "TrueGis oilasidan · eng yirik loyihalarimizdan biri",
       title: "Shifo24 — klinikalar uchun.",
       text: "Ekotizim tibbiyotga kirdi: bemorlar onlayn yoziladi, navbat telefonda yuradi, klinika esa o‘z brendidagi Telegram botga ega bo‘ladi.",
       facts: [
@@ -114,11 +113,10 @@ export const TRUEGIS: Tr<TrueGisText> = {
         { icon: "bot", name: "Боты и CRM", text: "Брендированный бот и панель управления", items: ["Свой бот", "CRM", "AI-помощник", "Статистика"] },
         { icon: "heart", name: "Shifo24", text: "Полное решение для клиник", items: ["Онлайн-запись", "Живая очередь", "Медкарта", "SMS"] },
       ],
-      childTag: "Первый большой продукт",
       next: { name: "Дальше", text: "Готовим новые направления" },
     },
     shifo: {
-      kicker: "Из семьи TrueGis · первый большой продукт",
+      kicker: "Из семьи TrueGis · один из наших крупнейших проектов",
       title: "Shifo24 — для клиник.",
       text: "Экосистема пришла в медицину: пациенты записываются онлайн, очередь движется в телефоне, а клиника получает собственного Telegram-бота со своим брендом.",
       facts: [
@@ -176,11 +174,10 @@ export const TRUEGIS: Tr<TrueGisText> = {
         { icon: "bot", name: "Bots and CRM", text: "A branded bot and a dashboard", items: ["Own bot", "CRM", "AI assistant", "Analytics"] },
         { icon: "heart", name: "Shifo24", text: "A complete solution for clinics", items: ["Online booking", "Live queue", "Medical card", "SMS"] },
       ],
-      childTag: "First major product",
       next: { name: "Next", text: "New directions in the works" },
     },
     shifo: {
-      kicker: "From the TrueGis family · first major product",
+      kicker: "From the TrueGis family · one of our biggest projects",
       title: "Shifo24 — for clinics.",
       text: "The ecosystem has entered healthcare: patients book online, the queue moves on their phone, and every clinic gets its own branded Telegram bot.",
       facts: [

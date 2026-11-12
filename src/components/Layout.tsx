@@ -210,7 +210,7 @@ export function Showcase({ screens, captions }: { screens: ReactNode[]; captions
 
 const API = ((import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() || "https://dev.admin13.uz/v1").replace(/\/$/, "");
 
-export function Contact({ product, lang, title, text }: { product: "truegis" | "shifo24"; lang: Lang; title: string; text: string }) {
+export function Contact({ product, lang, title, text, steps }: { product: "truegis" | "shifo24"; lang: Lang; title: string; text: string; steps?: string[] }) {
   const t = COMMON[lang].form;
   const [state, setState] = useState<"idle" | "sending" | "ok" | "err">("idle");
   const [error, setError] = useState<string | null>(null);
@@ -245,6 +245,16 @@ export function Contact({ product, lang, title, text }: { product: "truegis" | "
       <Reveal className="contact__info">
         <h2 className="display-2">{title}</h2>
         <p className="lead">{text}</p>
+        {steps && (
+          <ol className="contact__steps">
+            {steps.map((s, i) => (
+              <li key={s}>
+                <span>0{i + 1}</span>
+                {s}
+              </li>
+            ))}
+          </ol>
+        )}
         <div className="contact__lines">
           <a className="contact__line" href={CONTACTS.phoneHref}>
             <Icon name="call" size={20} />
@@ -291,39 +301,52 @@ export function Contact({ product, lang, title, text }: { product: "truegis" | "
   );
 }
 
-export function Footer({ lang, links }: { lang: Lang; links: NavLink[] }) {
+/** Подвал: на странице Shifo24 — свой бренд, без TrueGis (бот, канал, QR). */
+export function Footer({ lang, links, brand = "truegis" }: { lang: Lang; links: NavLink[]; brand?: "truegis" | "shifo24" }) {
   const t = COMMON[lang].footer;
+  const shifo = brand === "shifo24";
   return (
     <footer className="footer">
       <div className="container">
-        <div className="footer__grid">
+        <div className={shifo ? "footer__grid footer__grid--3" : "footer__grid"}>
           <div className="footer__brand">
-            <a className="brand" href="/">
-              <img src="/img/truegis-icon.png" alt="" width={30} height={30} />
-              TrueGis
-            </a>
-            <p className="muted">{t.about}</p>
-            <div className="footer__qr">
-              <img src="/img/truegis-qr.svg" alt="QR @TrueGis_bot" width={84} height={84} />
-              <span className="muted">{t.tryBot}</span>
+            {shifo ? (
+              <a className="brand" href="/shifo24/">
+                <img src="/img/shifo24-logo.png" alt="" width={30} height={27} />
+                Shifo24
+              </a>
+            ) : (
+              <a className="brand" href="/">
+                <img src="/img/truegis-icon.png" alt="" width={30} height={30} />
+                TrueGis
+              </a>
+            )}
+            <p className="muted">{shifo ? t.aboutShifo : t.about}</p>
+            {!shifo && (
+              <div className="footer__qr">
+                <img src="/img/truegis-qr.svg" alt="QR @TrueGis_bot" width={84} height={84} />
+                <span className="muted">{t.tryBot}</span>
+              </div>
+            )}
+          </div>
+          {!shifo && (
+            <div>
+              <h4>{t.products}</h4>
+              <ul>
+                <li>
+                  <a href="/">TrueGis</a>
+                </li>
+                <li>
+                  <a href="/shifo24/">Shifo24</a>
+                </li>
+                <li>
+                  <a href={CONTACTS.bot} target="_blank" rel="noreferrer">
+                    @TrueGis_bot
+                  </a>
+                </li>
+              </ul>
             </div>
-          </div>
-          <div>
-            <h4>{t.products}</h4>
-            <ul>
-              <li>
-                <a href="/">TrueGis</a>
-              </li>
-              <li>
-                <a href="/shifo24/">Shifo24</a>
-              </li>
-              <li>
-                <a href={CONTACTS.bot} target="_blank" rel="noreferrer">
-                  @TrueGis_bot
-                </a>
-              </li>
-            </ul>
-          </div>
+          )}
           <div>
             <h4>{t.links}</h4>
             <ul>
@@ -341,9 +364,15 @@ export function Footer({ lang, links }: { lang: Lang; links: NavLink[] }) {
                 <a href={CONTACTS.phoneHref}>{CONTACTS.phone}</a>
               </li>
               <li>
-                <a href={CONTACTS.channel} target="_blank" rel="noreferrer">
-                  t.me/TrueGis
-                </a>
+                {shifo ? (
+                  <a href={CONTACTS.sales} target="_blank" rel="noreferrer">
+                    Telegram
+                  </a>
+                ) : (
+                  <a href={CONTACTS.channel} target="_blank" rel="noreferrer">
+                    t.me/TrueGis
+                  </a>
+                )}
               </li>
               <li className="muted">{COMMON[lang].address}</li>
             </ul>
@@ -353,7 +382,7 @@ export function Footer({ lang, links }: { lang: Lang; links: NavLink[] }) {
           <span>
             © {new Date().getFullYear()} {t.rights}
           </span>
-          <span>TrueGis · Shifo24</span>
+          <span>{shifo ? "Shifo24" : "TrueGis · Shifo24"}</span>
         </div>
       </div>
     </footer>

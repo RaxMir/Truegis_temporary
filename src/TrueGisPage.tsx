@@ -91,7 +91,6 @@ export default function TrueGisPage() {
                   const child = n.icon === "heart";
                   return (
                     <Reveal className={`eco__node ${child ? "eco__node--child" : ""}`} key={n.name} delay={i * 90}>
-                      {child && <span className="eco__tag">{t.eco.childTag}</span>}
                       <span className="eco__icon">
                         <Icon name={n.icon} size={24} />
                       </span>

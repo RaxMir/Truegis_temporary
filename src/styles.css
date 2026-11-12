@@ -28,6 +28,7 @@
   --core-shadow: 0 30px 80px -30px rgba(79, 123, 255, 0.6);
   --teal-chip-text: #bdeefa;
   --spot-bg: radial-gradient(80% 90% at 85% 40%, rgba(47, 181, 214, 0.28), transparent 65%), linear-gradient(180deg, #10171b, #0d1013);
+  --tg-panel-bg: radial-gradient(80% 90% at 85% 45%, rgba(79, 123, 255, 0.26), transparent 65%), linear-gradient(180deg, #11131d, #0d0e14);
   --grid-opacity: 0.35;
   --glow-mix: 22%;
   color-scheme: dark;
@@ -54,6 +55,7 @@ html[data-theme="light"] {
   --core-shadow: 0 30px 70px -35px rgba(49, 89, 232, 0.45);
   --teal-chip-text: #0b6f8f;
   --spot-bg: radial-gradient(80% 90% at 85% 40%, rgba(47, 181, 214, 0.25), transparent 65%), linear-gradient(180deg, #f2fbfe, #e6f6fb);
+  --tg-panel-bg: radial-gradient(80% 90% at 85% 45%, rgba(61, 99, 240, 0.18), transparent 65%), linear-gradient(180deg, #f3f6ff, #e9eefc);
   --grid-opacity: 0.6;
   --glow-mix: 16%;
   color-scheme: light;
@@ -63,6 +65,18 @@ html[data-theme="light"] {
   --accent-strong: #0a8fb8;
   --accent-soft: rgba(47, 181, 214, 0.12);
   --grad: linear-gradient(100deg, #5fd3ee 0%, #0a8fb8 100%);
+}
+.theme-shifo .theme-truegis {
+  --accent: #6f8cff;
+  --accent-strong: #4f7bff;
+  --accent-soft: rgba(111, 140, 255, 0.12);
+  --grad: linear-gradient(100deg, #8a9bff 0%, #4f7bff 100%);
+}
+html[data-theme="light"] .theme-shifo .theme-truegis {
+  --accent: #3d63f0;
+  --accent-strong: #3159e8;
+  --accent-soft: rgba(61, 99, 240, 0.09);
+  --grad: linear-gradient(100deg, #6f86ff 0%, #3159e8 100%);
 }
 html[data-theme="light"] .theme-shifo {
   --accent: #0a8fb8;
@@ -162,9 +176,6 @@ h3 { font-size: 22px; font-weight: 600; line-height: 1.2; }
 .hero__text { display: grid; gap: 28px; justify-items: start; }
 .hero__ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
 .hero__scene { aspect-ratio: 1 / 1; width: 100%; max-width: 640px; justify-self: end; }
-.parent-link { display: inline-flex; align-items: center; gap: 10px; padding: 7px 14px 7px 8px; border-radius: 999px; border: 1px solid var(--line-2); font-size: 14px; font-weight: 500; color: var(--muted); transition: border-color 0.2s, color 0.2s; }
-.parent-link:hover { border-color: var(--accent); color: var(--text); }
-.parent-link img { border-radius: 6px; }
 
 /* 3D-сцена */
 .scene3d { position: relative; }
@@ -214,15 +225,8 @@ h3 { font-size: 22px; font-weight: 600; line-height: 1.2; }
 .eco__node ul { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .eco__node li { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--surface-2); color: var(--chip-text); }
 .eco__icon { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
-.eco__node--child {
-  border-color: rgba(47, 181, 214, 0.55);
-  background: radial-gradient(120% 90% at 50% 0%, rgba(47, 181, 214, 0.18), transparent 70%), var(--surface);
-  box-shadow: 0 30px 70px -35px rgba(47, 181, 214, 0.7);
-}
 .eco__node--child .eco__icon { background: rgba(47, 181, 214, 0.15); color: var(--teal); }
 .eco__node--child li { background: rgba(47, 181, 214, 0.1); color: var(--teal-chip-text); }
-.eco__node--child::before { background: var(--teal); }
-.eco__tag { position: absolute; top: -12px; right: 16px; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: linear-gradient(100deg, #5fd3ee, #0a8fb8); color: #fff; }
 .eco__link { display: inline-flex; align-items: center; gap: 6px; color: var(--teal); font-weight: 600; margin-top: 6px; }
 .eco__node--next { border-style: dashed; background: transparent; }
 .eco__node--next .eco__icon { background: transparent; border: 1px dashed var(--line-2); color: var(--muted); }
@@ -252,6 +256,28 @@ h3 { font-size: 22px; font-weight: 600; line-height: 1.2; }
 .showcase__caption { font-size: 14px; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; }
 .showcase .desk { width: 560px; }
 
+/* TrueGis на странице Shifo24: отдельная система, синий блок */
+.tg-panel {
+  position: relative; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px; align-items: center;
+  padding: 56px; border-radius: 36px; overflow: hidden;
+  background: var(--tg-panel-bg);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.tg-panel__text { display: grid; gap: 20px; justify-items: start; position: relative; z-index: 1; }
+.tg-panel__brand { display: flex; align-items: center; gap: 12px; font-size: 24px; font-weight: 700; }
+.tg-panel__brand img { border-radius: 10px; }
+.tg-panel__points { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 24px; margin-top: 6px; width: 100%; }
+.tg-point { display: flex; gap: 14px; align-items: flex-start; }
+.tg-point__icon { flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; color: var(--accent); background: var(--accent-soft); }
+.tg-point h3 { font-size: 17px; margin-bottom: 4px; }
+.tg-point p { margin: 0; color: var(--muted); font-size: 15px; }
+.tg-panel__stats { display: flex; gap: 40px; flex-wrap: wrap; padding: 4px 0; }
+.tg-panel__stats b { display: block; font-size: 30px; font-weight: 700; color: var(--accent); }
+.tg-panel__stats span { color: var(--muted); font-size: 15px; }
+.tg-panel__ctas { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.tg-panel__more { display: inline-flex; align-items: center; gap: 6px; color: var(--accent); font-weight: 600; }
+.tg-panel__scene { aspect-ratio: 1 / 1; width: 100%; max-width: 500px; justify-self: center; }
+
 /* Возможности Shifo24 */
 .features { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
 .feature-item { display: flex; gap: 18px; padding: 30px 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background 0.3s; }
@@ -274,15 +300,13 @@ h3 { font-size: 22px; font-weight: 600; line-height: 1.2; }
 .stat span { color: var(--muted); }
 
 /* Семья TrueGis (на странице Shifo24) */
-.family { display: flex; align-items: center; gap: 24px; padding: 28px 32px; border-radius: var(--radius); border: 1px solid var(--line-2); background: var(--surface); }
-.family img { border-radius: 14px; flex-shrink: 0; }
-.family > div { flex: 1; }
-.family h3 { margin-bottom: 4px; }
-.family p { margin: 0; }
 
 /* Контакты */
 .contact { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 64px; align-items: start; }
 .contact__info { display: grid; gap: 24px; }
+.contact__steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.contact__steps li { display: flex; align-items: center; gap: 14px; font-size: 17px; font-weight: 500; }
+.contact__steps span { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; font-size: 13px; font-weight: 700; color: var(--accent); background: var(--accent-soft); }
 .contact__lines { display: grid; gap: 14px; margin-top: 8px; }
 .contact__line { display: inline-flex; align-items: center; gap: 12px; font-size: 18px; }
 .contact__line svg { color: var(--accent); flex-shrink: 0; }
@@ -300,6 +324,7 @@ h3 { font-size: 22px; font-weight: 600; line-height: 1.2; }
 /* Подвал */
 .footer { border-top: 1px solid var(--line); padding: 64px 0 32px; }
 .footer__grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.2fr; gap: 40px; }
+.footer__grid--3 { grid-template-columns: 1.6fr 1fr 1.2fr; }
 .footer__brand { display: grid; gap: 16px; align-content: start; }
 .footer__brand p { margin: 0; max-width: 320px; font-size: 15px; }
 .footer__qr { display: flex; align-items: center; gap: 14px; font-size: 13px; }
@@ -378,7 +403,9 @@ h3 { font-size: 22px; font-weight: 600; line-height: 1.2; }
   .features { grid-template-columns: repeat(2, 1fr); }
   .showcase { min-height: 0; }
   .showcase__item--0, .showcase__item--2 { display: none; }
-  .footer__grid { grid-template-columns: 1fr 1fr; }
+  .footer__grid, .footer__grid--3 { grid-template-columns: 1fr 1fr; }
+  .tg-panel { grid-template-columns: 1fr; padding: 40px 28px; }
+  .tg-panel__scene { max-width: 420px; }
 }
 @media (max-width: 680px) {
   body { font-size: 16px; }
@@ -391,8 +418,8 @@ h3 { font-size: 22px; font-weight: 600; line-height: 1.2; }
   .stat:nth-child(3) { border-left: 0; }
   .stat:nth-child(n + 3) { border-top: 1px solid var(--line); }
   .eco__nodes { grid-template-columns: 1fr; }
-  .family { flex-direction: column; align-items: flex-start; }
-  .footer__grid { grid-template-columns: 1fr; }
+  .footer__grid, .footer__grid--3 { grid-template-columns: 1fr; }
+  .tg-panel__points { grid-template-columns: 1fr; }
   .lang button { padding: 6px 6px; }
   .brand { font-size: 18px; }
   .header__row { gap: 12px; }

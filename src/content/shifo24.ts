@@ -6,7 +6,7 @@ type Item = { icon: IconName; title: string; text: string };
 export type ShifoText = {
   title: string;
   description: string;
-  nav: { features: string; how: string; inside: string; contact: string; truegis: string };
+  nav: { features: string; how: string; inside: string; contact: string };
   cta: string;
   hero: { kicker: string; h1: string; h1accent: string; text: string; primary: string; secondary: string };
   change: { title: string; items: Item[] };
@@ -14,22 +14,22 @@ export type ShifoText = {
   inside: { kicker: string; title: string; text: string; captions: string[] };
   steps: { title: string; items: { title: string; text: string }[] };
   stats: { value: string; label: string }[];
-  family: { title: string; text: string; cta: string };
-  contact: { title: string; text: string };
+  truegis: { kicker: string; title: string; text: string; points: Item[]; stats: { value: string; label: string }[]; cta: string; more: string };
+  contact: { title: string; text: string; steps: string[] };
 };
 
 export const SHIFO: Tr<ShifoText> = {
   uz: {
     title: "Shifo24 — klinikalar uchun onlayn yozilish, jonli navbat va CRM",
-    description: "Shifo24 — TrueGis ekotizimidan klinikalar uchun yechim: 24/7 onlayn yozilish, jonli navbat, SMS eslatmalar, elektron tibbiy karta va klinikaning o‘z Telegram boti.",
-    nav: { features: "Imkoniyatlar", how: "Ulanish", inside: "Mahsulot", contact: "Aloqa", truegis: "TrueGis" },
-    cta: "Demo so‘rash",
+    description: "Shifo24 — klinikalar uchun yechim: 24/7 onlayn yozilish, jonli navbat, SMS eslatmalar, elektron tibbiy karta va klinikaning o‘z Telegram boti.",
+    nav: { features: "Imkoniyatlar", how: "Ulanish", inside: "Mahsulot", contact: "Aloqa" },
+    cta: "Ariza qoldirish",
     hero: {
-      kicker: "TrueGis ekotizimidan",
+      kicker: "Klinikalar uchun platforma",
       h1: "Bemorlar o‘zi yoziladi.",
       h1accent: "Navbat o‘zi yuradi.",
       text: "Shifo24 — klinika uchun onlayn yozilish, jonli navbat, SMS eslatmalar, tibbiy karta va klinikangizning o‘z Telegram boti. Hammasi bitta tizimda.",
-      primary: "Demo so‘rash",
+      primary: "Ariza qoldirish",
       secondary: "Imkoniyatlar",
     },
     change: {
@@ -76,20 +76,40 @@ export const SHIFO: Tr<ShifoText> = {
       { value: "−60%", label: "qabulxonaga qo‘ng‘iroq" },
       { value: "24/7", label: "yozilish" },
     ],
-    family: { title: "TrueGis oilasining bir qismi", text: "Shifo24 TrueGis ekotizimida ishlaydi: klinikangiz TrueGis katalogi, xaritasi va AI qidiruvida ham ko‘rinadi.", cta: "TrueGis ekotizimi" },
-    contact: { title: "Klinikangizni bugun onlayn qiling.", text: "Raqamingizni qoldiring — 15 daqiqalik demo ko‘rsatamiz." },
+    truegis: {
+      kicker: "Qo‘shimcha · TrueGis tizimi",
+      title: "TrueGis bilan — yangi bemorlar.",
+      text: "TrueGis — shahar bo‘ylab joylarni topish uchun alohida Telegram platformasi. Klinikangizni unga ulang: yaqin atrofda shifokor izlayotgan odamlar sizni topadi va darhol Shifo24 orqali yoziladi.",
+      points: [
+        { icon: "pin", title: "Xarita va katalogda", text: "Yaqin atrofdagi odamlar klinikangizni xaritada va katalogda ko‘radi." },
+        { icon: "search", title: "AI qidiruvda", text: "«Yaqin atrofda yaxshi kardiolog» kabi so‘rovlarda klinikangiz tavsiya qilinadi." },
+        { icon: "chat", title: "Sharhlar va reyting", text: "Bemorlar sharhlari yangi bemorlarga ishonch beradi." },
+        { icon: "calendar", title: "To‘g‘ridan-to‘g‘ri yozilish", text: "TrueGis’dan kelgan bemor jadvalingizga darhol tushadi." },
+      ],
+      stats: [
+        { value: "150 000+", label: "TrueGis foydalanuvchisi" },
+        { value: "2 mln+", label: "qidiruv har oy" },
+      ],
+      cta: "Ulash haqida so‘rash",
+      more: "TrueGis haqida",
+    },
+    contact: {
+      title: "Klinikangizni bugun onlayn qiling.",
+      text: "Ariza qoldiring — avval mutaxassisimiz bilan gaplashasiz, keyin klinikangizga mos tarif va paketni birga tanlaymiz.",
+      steps: ["Ariza qoldirasiz", "Mutaxassis bilan suhbat va demo", "Tarif va paketni tanlaysiz"],
+    },
   },
   ru: {
     title: "Shifo24 — онлайн-запись, живая очередь и CRM для клиник",
-    description: "Shifo24 — решение для клиник из экосистемы TrueGis: онлайн-запись 24/7, живая очередь, SMS-напоминания, электронная медкарта и собственный Telegram-бот клиники.",
-    nav: { features: "Возможности", how: "Подключение", inside: "Продукт", contact: "Контакты", truegis: "TrueGis" },
-    cta: "Запросить демо",
+    description: "Shifo24 — решение для клиник: онлайн-запись 24/7, живая очередь, SMS-напоминания, электронная медкарта и собственный Telegram-бот клиники.",
+    nav: { features: "Возможности", how: "Подключение", inside: "Продукт", contact: "Контакты" },
+    cta: "Оставить заявку",
     hero: {
-      kicker: "Из экосистемы TrueGis",
+      kicker: "Платформа для клиник",
       h1: "Пациенты записываются сами.",
       h1accent: "Очередь движется сама.",
       text: "Shifo24 — онлайн-запись, живая очередь, SMS-напоминания, медкарта и собственный Telegram-бот вашей клиники. Всё в одной системе.",
-      primary: "Запросить демо",
+      primary: "Оставить заявку",
       secondary: "Возможности",
     },
     change: {
@@ -136,20 +156,40 @@ export const SHIFO: Tr<ShifoText> = {
       { value: "−60%", label: "звонков в регистратуру" },
       { value: "24/7", label: "запись" },
     ],
-    family: { title: "Часть семьи TrueGis", text: "Shifo24 работает в экосистеме TrueGis: вашу клинику видно и в каталоге, на карте и в AI-поиске TrueGis.", cta: "Экосистема TrueGis" },
-    contact: { title: "Переведите клинику в онлайн сегодня.", text: "Оставьте номер — покажем 15-минутное демо." },
+    truegis: {
+      kicker: "Дополнительно · система TrueGis",
+      title: "С TrueGis — новые пациенты.",
+      text: "TrueGis — отдельная Telegram-платформа для поиска мест по городу. Подключите к ней клинику: люди, которые ищут врача рядом, найдут вас и сразу запишутся через Shifo24.",
+      points: [
+        { icon: "pin", title: "На карте и в каталоге", text: "Люди поблизости видят вашу клинику на карте и в каталоге." },
+        { icon: "search", title: "В AI-поиске", text: "На запросы вроде «хороший кардиолог рядом» AI рекомендует вашу клинику." },
+        { icon: "chat", title: "Отзывы и рейтинг", text: "Отзывы пациентов вызывают доверие у новых пациентов." },
+        { icon: "calendar", title: "Прямая запись", text: "Пациент из TrueGis сразу попадает в ваше расписание." },
+      ],
+      stats: [
+        { value: "150 000+", label: "пользователей TrueGis" },
+        { value: "2 млн+", label: "поисков в месяц" },
+      ],
+      cta: "Узнать о подключении",
+      more: "О TrueGis",
+    },
+    contact: {
+      title: "Переведите клинику в онлайн сегодня.",
+      text: "Оставьте заявку — сначала поговорите с нашим специалистом, а затем вместе подберём тариф и пакет для вашей клиники.",
+      steps: ["Оставляете заявку", "Разговор со специалистом и демо", "Выбираете тариф и пакет"],
+    },
   },
   en: {
     title: "Shifo24 — online booking, live queue and CRM for clinics",
-    description: "Shifo24, from the TrueGis ecosystem: 24/7 online booking, a live queue, SMS reminders, electronic medical cards and your clinic’s own Telegram bot.",
-    nav: { features: "Features", how: "Setup", inside: "Product", contact: "Contact", truegis: "TrueGis" },
-    cta: "Request a demo",
+    description: "Shifo24 for clinics: 24/7 online booking, a live queue, SMS reminders, electronic medical cards and your clinic’s own Telegram bot.",
+    nav: { features: "Features", how: "Setup", inside: "Product", contact: "Contact" },
+    cta: "Leave a request",
     hero: {
-      kicker: "From the TrueGis ecosystem",
+      kicker: "A platform for clinics",
       h1: "Patients book themselves.",
       h1accent: "The queue moves itself.",
       text: "Shifo24 gives your clinic online booking, a live queue, SMS reminders, medical cards and its own Telegram bot. All in one system.",
-      primary: "Request a demo",
+      primary: "Leave a request",
       secondary: "Features",
     },
     change: {
@@ -196,7 +236,27 @@ export const SHIFO: Tr<ShifoText> = {
       { value: "−60%", label: "front-desk calls" },
       { value: "24/7", label: "booking" },
     ],
-    family: { title: "Part of the TrueGis family", text: "Shifo24 runs on the TrueGis ecosystem: your clinic also shows up in the TrueGis catalog, map and AI search.", cta: "The TrueGis ecosystem" },
-    contact: { title: "Take your clinic online today.", text: "Leave your number — we’ll show you a 15-minute demo." },
+    truegis: {
+      kicker: "Add-on · the TrueGis system",
+      title: "With TrueGis — new patients.",
+      text: "TrueGis is a separate Telegram platform for finding places around the city. Connect your clinic to it: people looking for a doctor nearby will find you and book straight through Shifo24.",
+      points: [
+        { icon: "pin", title: "On the map and in the catalog", text: "People nearby see your clinic on the map and in the catalog." },
+        { icon: "search", title: "In AI search", text: "For requests like “a good cardiologist nearby”, the AI recommends your clinic." },
+        { icon: "chat", title: "Reviews and ratings", text: "Patient reviews build trust with new patients." },
+        { icon: "calendar", title: "Direct booking", text: "A patient from TrueGis lands straight in your schedule." },
+      ],
+      stats: [
+        { value: "150,000+", label: "TrueGis users" },
+        { value: "2M+", label: "searches per month" },
+      ],
+      cta: "Ask about connecting",
+      more: "About TrueGis",
+    },
+    contact: {
+      title: "Take your clinic online today.",
+      text: "Leave a request — first you talk to our specialist, then together we choose the plan and package that fit your clinic.",
+      steps: ["You leave a request", "A call with a specialist and a demo", "You choose a plan and package"],
+    },
   },
 };
